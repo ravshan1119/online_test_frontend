@@ -3,7 +3,9 @@
     "allow": [
       "Bash(npm run lint:*)",
       "Bash(npm run build:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(git -C /Users/ravshan/online-test-frontend log --oneline --all)",
+      "Bash(npm install:*)"
     ]
   }
 }
