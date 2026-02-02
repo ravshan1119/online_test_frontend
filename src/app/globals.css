@@ -1,0 +1,57 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---- base resets ---- */
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-surface-950 font-sans text-surface-100;
+  }
+
+  ::selection {
+    @apply bg-brand-600/40 text-white;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-surface-900;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-surface-700 hover:bg-brand-600;
+  }
+}
+
+/* ---- reusable utilities ---- */
+@layer components {
+  .btn-primary {
+    @apply flex items-center justify-center gap-2 rounded-xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-brand-500 hover:shadow-lg hover:shadow-brand-600/20 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2 focus:ring-offset-surface-900 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-secondary {
+    @apply flex items-center justify-center gap-2 rounded-xl border border-surface-700 bg-surface-800/50 px-5 py-3 text-sm font-semibold text-surface-200 shadow-sm transition-all duration-200 hover:bg-surface-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2 focus:ring-offset-surface-900;
+  }
+
+  .input-field {
+    @apply w-full rounded-xl border border-surface-700 bg-surface-800/80 px-4 py-3 text-sm text-white placeholder-surface-500 shadow-sm transition-all focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20;
+  }
+
+  .card {
+    @apply rounded-2xl border border-surface-800 bg-surface-900/80 p-6 shadow-sm backdrop-blur-sm;
+  }
+
+  .cyber-bg {
+    background-image:
+      linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+}
