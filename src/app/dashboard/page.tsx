@@ -223,10 +223,8 @@ export default function DashboardPage() {
                         <td className="px-5 py-3.5 text-center">
                           <span
                             className={`inline-block rounded-full px-2.5 py-0.5 font-mono text-xs font-bold ${
-                              Number(r.score) >= 70
+                              Number(r.score) >= 90
                                 ? "bg-brand-600/20 text-brand-400"
-                                : Number(r.score) >= 40
-                                ? "bg-warning/20 text-warning"
                                 : "bg-danger/20 text-danger"
                             }`}
                           >

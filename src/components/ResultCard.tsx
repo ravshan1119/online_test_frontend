@@ -13,24 +13,14 @@ export default function ResultCard({ result, testTitle }: ResultCardProps) {
 
   let gradeColor = "text-danger";
   let gradeBg = "bg-danger/10 border-danger/30";
-  let gradeLabel = "Yaxshilash kerak";
+  let gradeLabel = "O'ta olmadingiz";
   let ringColor = "stroke-[#ff3366]";
 
-  if (score >= 80) {
+  if (score >= 90) {
     gradeColor = "text-brand-400";
     gradeBg = "bg-brand-600/10 border-brand-600/30";
-    gradeLabel = "A'lo!";
+    gradeLabel = "Muvaffaqiyatli o'tdingiz";
     ringColor = "stroke-[#10b981]";
-  } else if (score >= 60) {
-    gradeColor = "text-cyan-400";
-    gradeBg = "bg-cyan-600/10 border-cyan-600/30";
-    gradeLabel = "Yaxshi";
-    ringColor = "stroke-cyan-400";
-  } else if (score >= 40) {
-    gradeColor = "text-warning";
-    gradeBg = "bg-warning/10 border-warning/30";
-    gradeLabel = "O'rtacha";
-    ringColor = "stroke-[#fbbf24]";
   }
 
   const radius = 60;
