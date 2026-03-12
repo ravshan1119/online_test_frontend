@@ -3,7 +3,7 @@
   publish = ".next"
 
 [build.environment]
-  NEXT_PUBLIC_API_URL = "https://onlinetestplatform-production-0f86.up.railway.app/api/v1"
+  NEXT_PUBLIC_API_URL = "https://reliable-zachariah-spangly.ngrok-free.dev/api/v1"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"

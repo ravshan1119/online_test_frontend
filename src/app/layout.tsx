@@ -1,6 +1,8 @@
 "use client";
 
+import Script from "next/script";
 import { AuthProvider } from "@/context/AuthContext";
+import { TelegramProvider } from "@/context/TelegramContext";
 import "./globals.css";
 
 export default function RootLayout({
@@ -18,10 +20,13 @@ export default function RootLayout({
         />
       </head>
       <body className="cyber-bg">
-        <AuthProvider>{children}</AuthProvider>
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-yellow-500 text-black text-center py-2 text-sm font-semibold shadow-lg">
-          ⚠ Sayt test rejimida ishlamoqda
-        </div>
+        <Script
+          src="https://telegram.org/js/telegram-web-app.js"
+          strategy="beforeInteractive"
+        />
+        <TelegramProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </TelegramProvider>
       </body>
     </html>
   );

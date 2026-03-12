@@ -1,0 +1,13 @@
+{
+  "name": "cybertest-telegram-bot",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node bot.js",
+    "dev": "node --watch bot.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "node-telegram-bot-api": "^0.66.0"
+  }
+}
