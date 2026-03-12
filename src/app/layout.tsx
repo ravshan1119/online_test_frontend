@@ -22,7 +22,7 @@ export default function RootLayout({
       <body className="cyber-bg">
         <Script
           src="https://telegram.org/js/telegram-web-app.js"
-          strategy="beforeInteractive"
+          strategy="afterInteractive"
         />
         <TelegramProvider>
           <AuthProvider>{children}</AuthProvider>

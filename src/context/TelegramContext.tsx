@@ -76,11 +76,26 @@ export function TelegramProvider({ children }: { children: ReactNode }) {
   const [webApp, setWebApp] = useState<TelegramWebApp | null>(null);
 
   useEffect(() => {
-    const tg = window.Telegram?.WebApp;
-    if (tg && tg.initData) {
-      tg.ready();
-      tg.expand();
-      setWebApp(tg);
+    // SDK afterInteractive bilan yuklanadi, biroz kechikish kerak
+    const init = () => {
+      try {
+        const tg = window.Telegram?.WebApp;
+        if (tg && tg.initData) {
+          tg.ready();
+          tg.expand();
+          setWebApp(tg);
+        }
+      } catch {
+        // Telegram ichida emas — xato bermaydi
+      }
+    };
+
+    // SDK hali yuklanmagan bo'lsa kutamiz
+    if (window.Telegram?.WebApp) {
+      init();
+    } else {
+      const timer = setTimeout(init, 500);
+      return () => clearTimeout(timer);
     }
   }, []);
 
