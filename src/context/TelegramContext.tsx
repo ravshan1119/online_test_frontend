@@ -76,27 +76,35 @@ export function TelegramProvider({ children }: { children: ReactNode }) {
   const [webApp, setWebApp] = useState<TelegramWebApp | null>(null);
 
   useEffect(() => {
-    // SDK afterInteractive bilan yuklanadi, biroz kechikish kerak
     const init = () => {
       try {
         const tg = window.Telegram?.WebApp;
-        if (tg && tg.initData) {
+        if (tg) {
           tg.ready();
           tg.expand();
           setWebApp(tg);
+          return true;
         }
-      } catch {
-        // Telegram ichida emas — xato bermaydi
+      } catch (e) {
+        console.warn("Telegram WebApp init xatosi:", e);
       }
+      return false;
     };
 
-    // SDK hali yuklanmagan bo'lsa kutamiz
-    if (window.Telegram?.WebApp) {
-      init();
-    } else {
-      const timer = setTimeout(init, 500);
-      return () => clearTimeout(timer);
-    }
+    // SDK allaqachon yuklangan bo'lsa — darhol ishga tushiramiz
+    if (init()) return;
+
+    // SDK hali yuklanmagan — har 100ms da tekshiramiz, 5 sekundgacha kutamiz
+    let attempts = 0;
+    const maxAttempts = 50;
+    const interval = setInterval(() => {
+      attempts++;
+      if (init() || attempts >= maxAttempts) {
+        clearInterval(interval);
+      }
+    }, 100);
+
+    return () => clearInterval(interval);
   }, []);
 
   const value: TelegramContextValue = {

@@ -16,6 +16,15 @@ if (!WEB_APP_URL) {
 
 const bot = new TelegramBot(BOT_TOKEN, { polling: true });
 
+/* ---------- Xatoliklarni ushlash ---------- */
+bot.on("polling_error", (err) => {
+  console.error("❌ Polling xatosi:", err.code, err.message);
+});
+
+bot.on("error", (err) => {
+  console.error("❌ Bot xatosi:", err.message);
+});
+
 /* ---------- /start ---------- */
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
