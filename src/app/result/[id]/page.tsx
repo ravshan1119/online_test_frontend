@@ -50,7 +50,8 @@ export default function ResultPage() {
           setError("Natija topilmadi.");
         }
       } catch {
-        setError("Natijani yuklashda xatolik.");
+        /* Anonymous users can't fetch stored results — treat as not found */
+        setError("Natija topilmadi.");
       } finally {
         setLoading(false);
       }

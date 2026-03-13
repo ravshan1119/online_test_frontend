@@ -25,23 +25,32 @@ export default function Navbar() {
 
         {/* Right side */}
         <div className="flex items-center gap-4">
-          {user && (
-            <div className="flex items-center gap-2.5 rounded-full border border-surface-700 bg-surface-800/60 py-1.5 pl-2 pr-4">
-              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-600/20 text-brand-400">
-                <User size={14} />
+          {user ? (
+            <>
+              <div className="flex items-center gap-2.5 rounded-full border border-surface-700 bg-surface-800/60 py-1.5 pl-2 pr-4">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-600/20 text-brand-400">
+                  <User size={14} />
+                </div>
+                <span className="hidden text-sm font-medium text-surface-300 sm:inline">
+                  {user.first_name} {user.last_name}
+                </span>
               </div>
-              <span className="hidden text-sm font-medium text-surface-300 sm:inline">
-                {user.first_name} {user.last_name}
-              </span>
-            </div>
+              <button
+                onClick={logout}
+                className="flex items-center gap-1.5 rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-surface-400 transition-all hover:border-danger/30 hover:bg-danger/10 hover:text-danger"
+              >
+                <LogOut size={16} />
+                <span className="hidden sm:inline">Chiqish</span>
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              className="flex items-center gap-1.5 rounded-lg border border-surface-700 px-3 py-2 text-sm font-medium text-surface-400 transition-all hover:border-brand-600/40 hover:text-brand-400"
+            >
+              Kirish
+            </Link>
           )}
-          <button
-            onClick={logout}
-            className="flex items-center gap-1.5 rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-surface-400 transition-all hover:border-danger/30 hover:bg-danger/10 hover:text-danger"
-          >
-            <LogOut size={16} />
-            <span className="hidden sm:inline">Chiqish</span>
-          </button>
         </div>
       </div>
     </nav>

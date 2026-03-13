@@ -68,7 +68,6 @@ api.interceptors.response.use(
     /* Don't try to refresh if the failing request IS the refresh call */
     if (originalRequest.url?.includes("/auth/token/refresh")) {
       clearTokens();
-      if (typeof window !== "undefined") window.location.href = "/login";
       return Promise.reject(error);
     }
 
@@ -93,7 +92,6 @@ api.interceptors.response.use(
     const refresh = getRefreshToken();
     if (!refresh) {
       clearTokens();
-      if (typeof window !== "undefined") window.location.href = "/login";
       return Promise.reject(error);
     }
 
@@ -112,7 +110,6 @@ api.interceptors.response.use(
     } catch (refreshError) {
       processQueue(refreshError, null);
       clearTokens();
-      if (typeof window !== "undefined") window.location.href = "/login";
       return Promise.reject(refreshError);
     } finally {
       isRefreshing = false;

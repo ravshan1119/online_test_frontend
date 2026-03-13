@@ -2,22 +2,14 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function HomePage() {
-  const { isAuthenticated, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading) {
-      if (isAuthenticated) {
-        router.replace("/dashboard");
-      } else {
-        router.replace("/register");
-      }
-    }
-  }, [loading, isAuthenticated, router]);
+    router.replace("/dashboard");
+  }, [router]);
 
   return (
     <div className="flex min-h-screen items-center justify-center">

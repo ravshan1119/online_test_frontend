@@ -6,6 +6,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import Navbar from "@/components/Navbar";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import api from "@/services/api";
+import { useAuth } from "@/context/AuthContext";
 import type { Test, TestResult } from "@/types";
 import {
   ShieldCheck,
@@ -17,6 +18,7 @@ import {
 } from "lucide-react";
 
 export default function DashboardPage() {
+  const { isAuthenticated } = useAuth();
   const [tests, setTests] = useState<Test[]>([]);
   const [results, setResults] = useState<TestResult[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,12 +27,13 @@ export default function DashboardPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [testsRes, resultsRes] = await Promise.all([
-          api.get<Test[]>("/tests/"),
-          api.get<TestResult[]>("/tests/results/"),
-        ]);
+        const testsRes = await api.get<Test[]>("/tests/");
         setTests(testsRes.data);
-        setResults(resultsRes.data);
+
+        if (isAuthenticated) {
+          const resultsRes = await api.get<TestResult[]>("/tests/results/");
+          setResults(resultsRes.data);
+        }
       } catch {
         setError("Testlarni yuklashda xatolik. Qayta urinib ko'ring.");
       } finally {
@@ -38,7 +41,7 @@ export default function DashboardPage() {
       }
     }
     fetchData();
-  }, []);
+  }, [isAuthenticated]);
 
   const resultMap = new Map(results.map((r) => [r.test, r]));
 
