@@ -3,13 +3,12 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import ProtectedRoute from "@/components/ProtectedRoute";
 import Navbar from "@/components/Navbar";
 import ResultCard from "@/components/ResultCard";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import api from "@/services/api";
-import type { SubmitResponse, TestResult } from "@/types";
-import { ArrowLeft, RotateCcw, AlertCircle } from "lucide-react";
+import type { SubmitResponse } from "@/types";
+import { ArrowLeft, AlertCircle, Download } from "lucide-react";
 
 export default function ResultPage() {
   const params = useParams();
@@ -17,111 +16,116 @@ export default function ResultPage() {
   const testId = params.id as string;
 
   const [result, setResult] = useState<SubmitResponse | null>(null);
-  const [testTitle, setTestTitle] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
-    async function loadResult() {
-      const cached = sessionStorage.getItem(`result_${testId}`);
-      if (cached) {
-        try {
-          setResult(JSON.parse(cached));
-          sessionStorage.removeItem(`result_${testId}`);
-          setLoading(false);
-          return;
-        } catch {
-          /* fall through to API */
-        }
-      }
-
+    const cached = sessionStorage.getItem(`result_${testId}`);
+    if (cached) {
       try {
-        const { data } = await api.get<TestResult[]>("/tests/results/");
-        const match = data.find((r) => r.test === Number(testId));
-        if (match) {
-          setResult({
-            total_questions: match.total_questions,
-            correct_answers: match.correct_answers,
-            wrong_answers: match.wrong_answers,
-            score: Number(match.score),
-          });
-          setTestTitle(match.test_title);
-        } else {
-          setError("Natija topilmadi.");
-        }
+        setResult(JSON.parse(cached));
+        sessionStorage.removeItem(`result_${testId}`);
       } catch {
-        /* Anonymous users can't fetch stored results — treat as not found */
         setError("Natija topilmadi.");
-      } finally {
-        setLoading(false);
       }
+    } else {
+      setError("Natija topilmadi.");
     }
-
-    loadResult();
+    setLoading(false);
   }, [testId]);
 
+  const downloadCertificate = async () => {
+    if (!result?.certificate_id) return;
+    setDownloading(true);
+    try {
+      const response = await api.get(
+        `/tests/certificate/${result.certificate_id}/`,
+        { responseType: "blob" }
+      );
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `certificate-${result.certificate_id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch {
+      alert("Sertifikatni yuklab olishda xatolik yuz berdi.");
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
-    <ProtectedRoute>
-      <div className="min-h-screen">
-        <Navbar />
+    <div className="min-h-screen">
+      <Navbar />
 
-        <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-          {/* Loading */}
-          {loading && (
-            <div className="flex justify-center py-20">
-              <LoadingSpinner size="lg" label="Natija yuklanmoqda..." />
+      <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+        {/* Loading */}
+        {loading && (
+          <div className="flex justify-center py-20">
+            <LoadingSpinner size="lg" label="Natija yuklanmoqda..." />
+          </div>
+        )}
+
+        {/* Error */}
+        {error && (
+          <div className="flex items-start gap-2 rounded-xl border border-danger/30 bg-danger/10 p-4 text-sm text-danger">
+            <AlertCircle size={18} className="mt-0.5 flex-shrink-0" />
+            <div>
+              <p>{error}</p>
+              <button
+                onClick={() => router.push("/")}
+                className="mt-2 text-sm font-medium text-brand-400 hover:text-brand-300"
+              >
+                ← Bosh sahifaga qaytish
+              </button>
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Error */}
-          {error && (
-            <div className="flex items-start gap-2 rounded-xl border border-danger/30 bg-danger/10 p-4 text-sm text-danger">
-              <AlertCircle size={18} className="mt-0.5 flex-shrink-0" />
-              <div>
-                <p>{error}</p>
+        {/* Result */}
+        {!loading && !error && result && (
+          <div className="animate-slide-up">
+            <div className="mb-8 text-center">
+              <h1 className="font-display text-3xl font-bold text-white">
+                Test natijasi
+              </h1>
+              <p className="mt-1 text-surface-400">
+                Sizning ko&apos;rsatkichlaringiz
+              </p>
+            </div>
+
+            <ResultCard result={result} />
+
+            {/* Certificate download */}
+            {result.is_passed && result.certificate_id && (
+              <div className="mt-6 text-center">
                 <button
-                  onClick={() => router.push("/dashboard")}
-                  className="mt-2 text-sm font-medium text-brand-400 hover:text-brand-300"
+                  onClick={downloadCertificate}
+                  disabled={downloading}
+                  className="btn-primary inline-flex"
                 >
-                  ← Bosh sahifaga qaytish
+                  <Download size={16} />
+                  {downloading
+                    ? "Yuklab olinmoqda..."
+                    : "Sertifikat yuklab olish"}
                 </button>
               </div>
+            )}
+
+            {/* Actions */}
+            <div className="mt-8 flex justify-center">
+              <Link href="/" className="btn-secondary">
+                <ArrowLeft size={16} />
+                Bosh sahifa
+              </Link>
             </div>
-          )}
-
-          {/* Result */}
-          {!loading && !error && result && (
-            <div className="animate-slide-up">
-              <div className="mb-8 text-center">
-                <h1 className="font-display text-3xl font-bold text-white">
-                  Test natijasi
-                </h1>
-                <p className="mt-1 text-surface-400">
-                  Sizning ko&apos;rsatkichlaringiz
-                </p>
-              </div>
-
-              <ResultCard result={result} testTitle={testTitle} />
-
-              {/* Actions */}
-              <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-                <Link href="/dashboard" className="btn-secondary">
-                  <ArrowLeft size={16} />
-                  Bosh sahifa
-                </Link>
-
-                <button
-                  onClick={() => window.location.reload()}
-                  className="btn-secondary"
-                >
-                  <RotateCcw size={16} />
-                  Yangilash
-                </button>
-              </div>
-            </div>
-          )}
-        </main>
-      </div>
-    </ProtectedRoute>
+          </div>
+        )}
+      </main>
+    </div>
   );
 }

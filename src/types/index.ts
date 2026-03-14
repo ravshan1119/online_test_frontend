@@ -1,46 +1,4 @@
 /* ------------------------------------------------------------------ */
-/*  Auth                                                               */
-/* ------------------------------------------------------------------ */
-
-export interface RegisterPayload {
-  first_name: string;
-  last_name: string;
-  middle_name: string;
-  passport_series_number: string;
-  workplace: string;
-  position: string;
-  password: string;
-  password_confirm: string;
-}
-
-export interface LoginPayload {
-  passport_series_number: string;
-  password: string;
-}
-
-export interface AuthTokens {
-  access: string;
-  refresh: string;
-}
-
-export interface UserProfile {
-  id: number;
-  first_name: string;
-  last_name: string;
-  middle_name: string;
-  passport_series_number: string;
-  workplace: string;
-  position: string;
-  full_name: string;
-  date_joined: string;
-}
-
-export interface RegisterResponse {
-  user: Omit<UserProfile, "full_name" | "date_joined">;
-  tokens: AuthTokens;
-}
-
-/* ------------------------------------------------------------------ */
 /*  Tests                                                              */
 /* ------------------------------------------------------------------ */
 
@@ -73,18 +31,10 @@ export interface AnswerItem {
 
 export interface SubmitPayload {
   test_id: number;
+  first_name: string;
+  last_name: string;
+  middle_name?: string;
   answers: AnswerItem[];
-}
-
-export interface TestResult {
-  id: number;
-  test: number;
-  test_title: string;
-  total_questions: number;
-  correct_answers: number;
-  wrong_answers: number;
-  score: number;
-  submitted_at: string;
 }
 
 export interface SubmitResponse {
@@ -92,6 +42,17 @@ export interface SubmitResponse {
   correct_answers: number;
   wrong_answers: number;
   score: number;
+  is_passed: boolean;
+  certificate_id?: string;
+}
+
+export interface CertificateVerifyResponse {
+  valid: boolean;
+  full_name: string;
+  test_title: string;
+  score: number;
+  submitted_at: string;
+  certificate_id: string;
 }
 
 /* ------------------------------------------------------------------ */

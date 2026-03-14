@@ -9,19 +9,16 @@ interface ResultCardProps {
 }
 
 export default function ResultCard({ result, testTitle }: ResultCardProps) {
-  const { total_questions, correct_answers, wrong_answers, score } = result;
+  const { total_questions, correct_answers, wrong_answers, score, is_passed } = result;
 
-  let gradeColor = "text-danger";
-  let gradeBg = "bg-danger/10 border-danger/30";
-  let gradeLabel = "O'ta olmadingiz";
-  let ringColor = "stroke-[#ff3366]";
+  const passed = is_passed ?? score >= 90;
 
-  if (score >= 90) {
-    gradeColor = "text-brand-400";
-    gradeBg = "bg-brand-600/10 border-brand-600/30";
-    gradeLabel = "Muvaffaqiyatli o'tdingiz";
-    ringColor = "stroke-[#10b981]";
-  }
+  const gradeColor = passed ? "text-brand-400" : "text-danger";
+  const gradeBg = passed
+    ? "bg-brand-600/10 border-brand-600/30"
+    : "bg-danger/10 border-danger/30";
+  const gradeLabel = passed ? "Muvaffaqiyatli o'tdingiz" : "O'ta olmadingiz";
+  const ringColor = passed ? "stroke-[#10b981]" : "stroke-[#ff3366]";
 
   const radius = 60;
   const circumference = 2 * Math.PI * radius;
